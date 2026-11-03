@@ -17,14 +17,16 @@ export default function CursorTrail() {
       let leader = { ...mousePos.current };
 
       points.current.forEach((pt, index) => {
-        pt.x += (leader.x - pt.x) * 0.35;
-        pt.y += (leader.y - pt.y) * 0.35;
+        // Smooth lerp following previous point
+        pt.x += (leader.x - pt.x) * 0.38;
+        pt.y += (leader.y - pt.y) * 0.38;
         leader = { ...pt };
 
         const dot = dotsRef.current[index];
         if (dot) {
-          const scale = (12 - index) / 12;
-          const opacity = ((12 - index) / 12) * 0.75;
+          const ratio = (12 - index) / 12;
+          const scale = Math.max(0.2, ratio);
+          const opacity = ratio * 0.85;
           dot.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0) translate(-50%, -50%) scale(${scale})`;
           dot.style.opacity = `${opacity}`;
         }
