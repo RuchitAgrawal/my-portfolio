@@ -7,6 +7,7 @@ import { useGlobalReveal } from './hooks/useReveal';
 import CurtainLoader from './components/CurtainLoader';
 import CursorTrail from './components/CursorTrail';
 import Header from './components/Header';
+import SpacemanJourney from './components/SpacemanJourney';
 import TerminalHero from './components/TerminalHero';
 import { setAudioActive } from './utils/audioEffects';
 
@@ -59,6 +60,9 @@ export default function App() {
 
       {/* Fixed Header */}
       <Header audioRef={audioRef} playing={playing} setPlaying={setPlaying} />
+
+      {/* Floating Spaceman Mascot Layer */}
+      <SpacemanJourney />
 
       {/* Main Content */}
       <main>
