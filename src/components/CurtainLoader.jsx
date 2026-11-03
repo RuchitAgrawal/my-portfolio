@@ -1,79 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { playClickSound } from '../utils/audioEffects';
+import { useEffect, useState, useRef } from 'react'
 
-const DIAGNOSTIC_LINES = [
-  'booting ruchit.selfintro ...',
-  'GATE CSE 2026: rank 4391 / 200,000+ applicants [ top 2% ]',
-  'upstream PRs merged: meson 6500★ · oracle macaron 191★ · areg-sdk 345★',
-  'TheLastQuestion.io (Singapore · Remote): 6,000+ users in 8 weeks',
-  'note: this site was built by speaking, not typing.',
-  'Wispr Flow → Antigravity [ meta ]',
-  'ready █'
-];
+const BOOT_LINES = [
+  { text: '> booting ruchit.selfintro ...', acc: false },
+  { text: '> GATE CSE 2026: rank 4391 / 200,000+ applicants  ', acc: true, end: '[ top 2% ]' },
+  { text: '> upstream PRs merged: meson 6500★ · oracle macaron 191★ · areg-sdk 345★', acc: false },
+  { text: '> TheLastQuestion.io (Singapore · Remote): ', acc: true, end: '6,000+ users in 8 weeks' },
+  { text: '> note: this site was built by speaking, not typing.', acc: false },
+  { text: '> Wispr Flow → Emergent AI  ', acc: true, end: '[ meta ]' },
+  { text: '> ready ', acc: false, cursor: true },
+]
 
 export default function CurtainLoader({ onEnter }) {
-  const [visibleCount, setVisibleCount] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
+  const [state, setState] = useState('intro')
+  const [visibleLines, setVisibleLines] = useState(0)
+  const barRef = useRef(null)
 
   useEffect(() => {
-    if (visibleCount < DIAGNOSTIC_LINES.length) {
-      const timer = setTimeout(() => {
-        setVisibleCount((prev) => prev + 1);
-      }, 200);
-      return () => clearTimeout(timer);
+    const t = setTimeout(() => {
+      if (barRef.current) barRef.current.dataset.run = 'true'
+    }, 80)
+
+    const lineTimers = BOOT_LINES.map((_, i) =>
+      setTimeout(() => setVisibleLines(i + 1), 120 + i * 280)
+    )
+
+    return () => {
+      clearTimeout(t)
+      lineTimers.forEach(clearTimeout)
     }
-  }, [visibleCount]);
+  }, [])
 
   const handleEnter = (withMusic) => {
-    playClickSound();
-    setDismissed(true);
-    setTimeout(() => {
-      onEnter(withMusic);
-    }, 800);
-  };
+    if (typeof onEnter === 'function') {
+      onEnter(withMusic)
+    }
+    setState('lifting')
+    setTimeout(() => setState('done'), 750)
+  }
+
+  if (state === 'done') return null
 
   return (
-    <div className={`rp-curtain ${dismissed ? 'rp-curtain-dismissed' : ''}`}>
-      <div className="rp-curtain-box">
-        <div className="rp-curtain-header">
-          <div className="rp-curtain-dot active" />
-          <div className="rp-curtain-dot" />
-          <div className="rp-curtain-dot" />
-          <span style={{ fontSize: '12px', color: 'var(--ink-subtle)', marginLeft: '6px' }}>
-            ruchit.selfintro — boot sequence
-          </span>
+    <div className="rp-curtain" data-state={state} aria-hidden="true">
+      <div className="rp-curtain__panel">
+        <div className="rp-curtain__logo">● ruchit.selfintro</div>
+
+        <div className="rp-curtain__boot">
+          {BOOT_LINES.slice(0, visibleLines).map((line, i) => (
+            <div key={i}>
+              <span className="wht">{line.text}</span>
+              {line.acc && <span className="acc">{line.end}</span>}
+              {line.cursor && i === visibleLines - 1 && <span className="rp-blink" />}
+            </div>
+          ))}
         </div>
 
-        <div className="rp-curtain-lines">
-          {DIAGNOSTIC_LINES.slice(0, visibleCount).map((line, idx) => {
-            const isHighlight = line.includes('top 2%') || line.includes('6,000+') || line.includes('meta') || line.includes('ready');
-            return (
-              <div key={idx} className={`rp-curtain-line ${isHighlight ? 'highlight' : ''}`}>
-                <span style={{ color: 'var(--accent)', opacity: 0.7 }}>&gt;</span>
-                <span>{line}</span>
-              </div>
-            );
-          })}
+        <div className="rp-curtain__bar">
+          <div className="rp-curtain__bar-fill" ref={barRef} />
         </div>
 
-        <div className={`rp-curtain-actions ${visibleCount >= DIAGNOSTIC_LINES.length ? 'visible' : ''}`}>
-          <button
-            onClick={() => handleEnter(true)}
-            className="rp-btn rp-btn-primary"
-            style={{ fontSize: '13px' }}
-          >
-            ♫ Enter with Ambient Music
-          </button>
-          <button
-            onClick={() => handleEnter(false)}
-            className="rp-btn rp-btn-secondary"
-            style={{ fontSize: '13px' }}
-          >
-            Enter Silently
-          </button>
-        </div>
+        {visibleLines >= BOOT_LINES.length && (
+          <div className="rp-curtain__music">
+            <button
+              className="rp-curtain__music-btn rp-curtain__music-btn--primary"
+              onClick={() => handleEnter(true)}
+            >
+              ♫ enter with ambient music
+            </button>
+            <button
+              className="rp-curtain__music-btn"
+              onClick={() => handleEnter(false)}
+            >
+              enter silently
+            </button>
+          </div>
+        )}
       </div>
     </div>
-  );
+  )
 }
-

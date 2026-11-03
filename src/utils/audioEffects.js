@@ -1,110 +1,162 @@
-// Web Audio API Synthesizer & Music Volume Ducking Utility
+/* ============================================================
+   Web Audio API Synthesizer — Zero-Latency Micro Sounds
+   Synthesized mathematically — 0 KB external file size.
+   Mutes automatically if user turned off audio in header.
+   ============================================================ */
 
-let audioCtx = null;
-let audioActive = false;
+let audioCtx = null
 
 function getAudioContext() {
+  if (typeof window === 'undefined') return null
   if (!audioCtx) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) {
-      audioCtx = new AudioContext();
-    }
+    const AudioCtx = window.AudioContext || window.webkitAudioContext
+    if (AudioCtx) audioCtx = new AudioCtx()
   }
   if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
+    audioCtx.resume().catch(() => {})
   }
-  return audioCtx;
+  return audioCtx
 }
 
-export function setAudioActive(active) {
-  audioActive = active;
-  window.__audioActive = active;
-}
-
+// Master audio enabled check (synced with header audio state)
 export function isAudioActive() {
-  return audioActive || !!window.__audioActive;
+  if (typeof window === 'undefined') return false
+  return window.__audioEnabled === true
 }
 
-// Micro click tone
+export function setAudioActive(enabled) {
+  if (typeof window !== 'undefined') {
+    window.__audioEnabled = enabled
+  }
+}
+
+/**
+ * Ultra-subtle tactile click (buttons, links)
+ */
 export function playClickSound() {
-  if (!isAudioActive()) return;
+  if (!isAudioActive()) return
   try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(800, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.06);
-    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.06);
-  } catch (e) {
-    // silent fallback
-  }
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(1100, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.018)
+
+    gain.gain.setValueAtTime(0.04, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.018)
+
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+
+    osc.start()
+    osc.stop(ctx.currentTime + 0.02)
+  } catch {}
 }
 
-// Spaceman jetpack sound
-export function playJetpackSound() {
-  if (!isAudioActive()) return;
+/**
+ * Sci-fi matrix optics sweep (profile ASCII toggle)
+ */
+export function playToggleSound() {
+  if (!isAudioActive()) return
   try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(150, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.25);
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.28);
-  } catch (e) {
-    // silent fallback
-  }
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+
+    osc.type = 'triangle'
+    osc.frequency.setValueAtTime(380, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(1450, ctx.currentTime + 0.075)
+
+    gain.gain.setValueAtTime(0.045, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.075)
+
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+
+    osc.start()
+    osc.stop(ctx.currentTime + 0.08)
+  } catch {}
 }
 
-// Background Music Volume Ducking Helper
-export function duckBackgroundAudio(duck = true) {
-  const bg = window.__bgAudio;
-  if (!bg) return;
-  const target = duck ? 0.08 : 0.28;
-  const step = duck ? -0.02 : 0.02;
-  const interval = setInterval(() => {
-    if ((duck && bg.volume <= target) || (!duck && bg.volume >= target)) {
-      bg.volume = target;
-      clearInterval(interval);
-    } else {
-      bg.volume = Math.max(0, Math.min(1, bg.volume + step));
-    }
-  }, 40);
-}
-
-
-
-// Terminal keystroke chirp
+/**
+ * Terminal keystroke blip
+ */
 export function playTerminalSound() {
-  if (!isAudioActive()) return;
+  if (!isAudioActive()) return
   try {
-    const ctx = getAudioContext();
-    if (!ctx) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(1200, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.04);
-    gain.gain.setValueAtTime(0.04, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.04);
-  } catch (e) {
-    // silent fallback
-  }
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+
+    osc.type = 'square'
+    osc.frequency.setValueAtTime(750, ctx.currentTime)
+
+    gain.gain.setValueAtTime(0.025, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.015)
+
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+
+    osc.start()
+    osc.stop(ctx.currentTime + 0.016)
+  } catch {}
 }
+
+/**
+ * Jetpack thruster burst (Spaceman mascot flip)
+ */
+export function playJetpackSound() {
+  if (!isAudioActive()) return
+  try {
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+
+    osc.type = 'sawtooth'
+    osc.frequency.setValueAtTime(260, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12)
+    osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.22)
+
+    gain.gain.setValueAtTime(0.04, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22)
+
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+
+    osc.start()
+    osc.stop(ctx.currentTime + 0.23)
+  } catch {}
+}
+
+/**
+ * Cyberpunk laser nav sweep (on navigation jump)
+ */
+export function playLaserNavSound() {
+  if (!isAudioActive()) return
+  try {
+    const ctx = getAudioContext()
+    if (!ctx) return
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(1400, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(450, ctx.currentTime + 0.12)
+
+    gain.gain.setValueAtTime(0.035, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12)
+
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+
+    osc.start()
+    osc.stop(ctx.currentTime + 0.13)
+  } catch {}
+}
+

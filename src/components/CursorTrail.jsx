@@ -1,58 +1,33 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react'
 
 export default function CursorTrail() {
-  const dotsRef = useRef([]);
-  const mousePos = useRef({ x: -100, y: -100 });
-  const points = useRef(Array.from({ length: 12 }, () => ({ x: -100, y: -100 })));
+  const containerRef = useRef(null)
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      mousePos.current = { x: e.clientX, y: e.clientY };
-    };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (matchMedia('(pointer: coarse)').matches) return
+    const container = containerRef.current
+    if (!container) return
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    let lastX = 0, lastY = 0, count = 0
 
-    let animId;
-    const animate = () => {
-      let leader = { ...mousePos.current };
+    const onMove = (e) => {
+      const x = e.clientX, y = e.clientY
+      const dist = Math.hypot(x - lastX, y - lastY)
+      if (dist < 30) return
+      lastX = x; lastY = y; count++
 
-      points.current.forEach((pt, index) => {
-        // Smooth lerp following previous point
-        pt.x += (leader.x - pt.x) * 0.38;
-        pt.y += (leader.y - pt.y) * 0.38;
-        leader = { ...pt };
+      const dot = document.createElement('span')
+      dot.className = 'rp-cursor-dot'
+      const sz = 3 + Math.random() * 3
+      dot.style.cssText = `left:${x}px;top:${y}px;width:${sz}px;height:${sz}px;`
+      container.appendChild(dot)
+      setTimeout(() => dot.remove(), 850)
+    }
 
-        const dot = dotsRef.current[index];
-        if (dot) {
-          const ratio = (12 - index) / 12;
-          const scale = Math.max(0.2, ratio);
-          const opacity = ratio * 0.85;
-          dot.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0) translate(-50%, -50%) scale(${scale})`;
-          dot.style.opacity = `${opacity}`;
-        }
-      });
+    window.addEventListener('pointermove', onMove, { passive: true })
+    return () => window.removeEventListener('pointermove', onMove)
+  }, [])
 
-      animId = requestAnimationFrame(animate);
-    };
-
-    animId = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animId);
-    };
-  }, []);
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 9999 }}>
-      {Array.from({ length: 12 }).map((_, i) => (
-        <div
-          key={i}
-          ref={(el) => (dotsRef.current[i] = el)}
-          className="rp-cursor-dot"
-          style={{ willChange: 'transform, opacity' }}
-        />
-      ))}
-    </div>
-  );
+  return <div ref={containerRef} className="rp-cursor-trail" aria-hidden="true" />
 }

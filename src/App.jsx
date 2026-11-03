@@ -1,88 +1,49 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import './styles/portfolio.css';
-import CursorTrail from './components/CursorTrail';
+
+import { useGlobalReveal } from './hooks/useReveal';
 import CurtainLoader from './components/CurtainLoader';
+import CursorTrail from './components/CursorTrail';
 import Header from './components/Header';
 import TerminalHero from './components/TerminalHero';
 import { setAudioActive } from './utils/audioEffects';
-import { useGlobalReveal } from './hooks/useReveal';
 
 export default function App() {
-  const [curtainEntered, setCurtainEntered] = useState(false);
-  const [audioPlaying, setAudioPlaying] = useState(false);
   const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
 
-  // Hook global scroll reveal observer
+  // Global intersection observer for all .reveal elements
   useGlobalReveal();
 
-  // Initialize Lenis Smooth Scrolling
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
-    });
-
+    const lenis = new Lenis({ autoRaf: true });
     window.__lenis = lenis;
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    const animId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      lenis.destroy();
-      delete window.__lenis;
-    };
+    return () => lenis.destroy();
   }, []);
 
-  const handleCurtainEnter = (withMusic) => {
-    setCurtainEntered(true);
-    if (withMusic && audioRef.current) {
-      audioRef.current.volume = 0.28;
-      audioRef.current
-        .play()
-        .then(() => {
-          setAudioPlaying(true);
-          setAudioActive(true);
-        })
-        .catch((err) => {
-          console.warn('Autoplay prevented by browser:', err);
-        });
-    }
-  };
-
   useEffect(() => {
+    setAudioActive(playing);
     if (audioRef.current) {
       window.__bgAudio = audioRef.current;
     }
-  }, []);
+  }, [playing]);
+
+  const onEnter = (withMusic) => {
+    if (withMusic && audioRef.current) {
+      audioRef.current.volume = 0.28;
+      audioRef.current.loop = true;
+      audioRef.current
+        .play()
+        .then(() => setPlaying(true))
+        .catch(() => {});
+    }
+  };
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: 'var(--canvas)' }}>
-      {/* Background Animated Layers */}
-      <div className="rp-dot-grid" />
-      <div className="rp-film-grain" />
-
-      {/* Neon Cursor Trail */}
-      <CursorTrail />
-
-      {/* Fixed Top Navigation Header */}
-      <Header
-        audioRef={audioRef}
-        playing={audioPlaying}
-        setPlaying={setAudioPlaying}
-      />
-
-      {/* Background Cyberpunk Audio Engine */}
+    <>
+      {/* Background ambient music */}
       <audio
         ref={audioRef}
         src="/assets/audio/cyberpunk-piano.mp3"
@@ -90,16 +51,22 @@ export default function App() {
         preload="auto"
       />
 
-      {/* Initial Boot Curtain Loader */}
-      {!curtainEntered && (
-        <CurtainLoader onEnter={handleCurtainEnter} />
-      )}
+      {/* Boot Curtain Loader */}
+      <CurtainLoader onEnter={onEnter} />
 
-      {/* Main Content Sections */}
+      {/* Neon Cursor Trail */}
+      <CursorTrail />
+
+      {/* Fixed Header */}
+      <Header audioRef={audioRef} playing={playing} setPlaying={setPlaying} />
+
+      {/* Main Content */}
       <main>
-        {/* Terminal Hero Section */}
         <TerminalHero />
       </main>
-    </div>
+
+      {/* Subtle Film Grain Layer */}
+      <div className="grain-layer" />
+    </>
   );
 }
