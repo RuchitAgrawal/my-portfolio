@@ -4,6 +4,7 @@ import 'lenis/dist/lenis.css';
 import './styles/portfolio.css';
 import CursorTrail from './components/CursorTrail';
 import CurtainLoader from './components/CurtainLoader';
+import Header from './components/Header';
 import { setAudioActive } from './utils/audioEffects';
 import { useGlobalReveal } from './hooks/useReveal';
 
@@ -73,6 +74,13 @@ export default function App() {
       {/* Neon Cursor Trail */}
       <CursorTrail />
 
+      {/* Fixed Top Navigation Header */}
+      <Header
+        audioRef={audioRef}
+        playing={audioPlaying}
+        setPlaying={setAudioPlaying}
+      />
+
       {/* Background Cyberpunk Audio Engine */}
       <audio
         ref={audioRef}
@@ -86,24 +94,24 @@ export default function App() {
         <CurtainLoader onEnter={handleCurtainEnter} />
       )}
 
-      {/* Main Shell (Milestone 1 Preview) */}
-      <main className="rp-container" style={{ paddingTop: '120px', paddingBottom: '120px' }}>
+      {/* Main Shell (Milestone 2 Preview) */}
+      <main className="rp-container" style={{ paddingTop: '140px', paddingBottom: '120px' }}>
         <div className="reveal" style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto' }}>
           <div className="rp-eyebrow">
             <span className="rp-eyebrow-dot" />
-            <span>FOUNDATION INITIALIZED · LINEAR × CYBERPUNK</span>
+            <span>HEADER MOUNTED · GLASSMORPHISM &amp; EQ ACTIVE</span>
           </div>
           <h1 className="rp-hero-title">
             I build things because I can't help it.
           </h1>
           <p style={{ color: 'var(--ink-muted)', fontSize: '18px', lineHeight: '1.6', margin: '0 0 32px 0' }}>
-            Final-Year B.Tech CSE · PDEU, Gujarat · Class of '27. Audio engine, surface ladder, and Lenis smooth scrolling active.
+            Final-Year B.Tech CSE · PDEU, Gujarat · Class of '27. Fixed glass header and reactive EQ audio pill established.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <span className="rp-pill rp-pill-accent">GATE 4391 / TOP 2%</span>
             <span className="rp-pill rp-pill-accent">MESON 6.5K★ PR MERGED</span>
             <span className="rp-pill rp-pill-accent">6,000+ USERS SHIPPED</span>
-            <span className="rp-pill rp-pill-success">LENIS SMOOTH SCROLL ON</span>
+            <span className="rp-pill rp-pill-success">EQ AUDIO PILL READY</span>
           </div>
         </div>
       </main>
