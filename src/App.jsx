@@ -14,6 +14,7 @@ import JourneyComeback from './components/JourneyComeback';
 import ProjectsDeck from './components/ProjectsDeck';
 import OpenSourceShelf from './components/OpenSourceShelf';
 import Internships from './components/Internships';
+import OperatingPrinciples from './components/OperatingPrinciples';
 import { setAudioActive } from './utils/audioEffects';
 
 export default function App() {
@@ -77,6 +78,7 @@ export default function App() {
         <ProjectsDeck />
         <OpenSourceShelf />
         <Internships />
+        <OperatingPrinciples />
       </main>
 
       {/* Subtle Film Grain Layer */}
