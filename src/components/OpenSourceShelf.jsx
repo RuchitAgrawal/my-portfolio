@@ -1,8 +1,8 @@
-import { Star } from 'lucide-react'
+import { Star, ShieldCheck, Cpu, Network } from 'lucide-react'
 
 const REPOS = [
   {
-    icon: '🍬',
+    icon: <ShieldCheck size={17} style={{ color: 'var(--accent)' }} />,
     name: 'oracle/macaron',
     desc: 'Supply-chain security tool for automated build analysis & software provenance',
     stars: '191★',
@@ -10,7 +10,7 @@ const REPOS = [
     url: 'https://github.com/oracle/macaron',
   },
   {
-    icon: '🔧',
+    icon: <Cpu size={17} style={{ color: 'var(--accent)' }} />,
     name: 'mesonbuild/meson',
     desc: 'High-speed build system used by GNOME, systemd, GLib, and Linux core tooling',
     stars: '6,500★',
@@ -18,7 +18,7 @@ const REPOS = [
     url: 'https://github.com/mesonbuild/meson',
   },
   {
-    icon: '⚡',
+    icon: <Network size={17} style={{ color: 'var(--accent)' }} />,
     name: 'aregtech/areg-sdk',
     desc: 'Interface-centric distributed multi-cast communication engine & IPC framework',
     stars: '345★',
