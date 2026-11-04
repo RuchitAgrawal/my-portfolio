@@ -946,13 +946,15 @@ main { position: relative; padding-top: var(--header-h); z-index: 10; }
 .rp-beliefs-intro { max-width: 48ch; margin-bottom: clamp(2rem,4vh,3.5rem); }
 .rp-principles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   background: var(--hairline);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-card);
   overflow: hidden;
 }
+@media (max-width: 900px) { .rp-principles { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .rp-principles { grid-template-columns: 1fr; } }
 .rp-principle {
   padding: 1.6rem;
   background: var(--surface-1);
