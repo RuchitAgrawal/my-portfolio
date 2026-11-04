@@ -550,12 +550,28 @@ main { position: relative; padding-top: var(--header-h); z-index: 10; }
    ============================================================ */
 .rp-hero {
   min-height: calc(100svh - var(--header-h));
+  display: grid;
+  grid-template-columns: 55fr 45fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  padding-block: clamp(2rem, 8vh, 5rem);
+  position: relative;
+}
+.rp-hero__left {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding-block: clamp(2rem, 8vh, 5rem);
   gap: 1.75rem;
+}
+.rp-hero__right {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .rp-hero { grid-template-columns: 1fr; }
+  .rp-hero__right { display: none; }
 }
 /* Subtle ambient glow on canvas — NOT a spotlight card */
 .rp-hero::after {
@@ -1138,4 +1154,194 @@ main { position: relative; padding-top: var(--header-h); z-index: 10; }
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ============================================================
+   HERO RIGHT PANEL — Stats + Particles + Building Card
+   ============================================================ */
+.rp-code-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  z-index: 0;
+}
+.rp-code-particle {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(127,255,0,0.18);
+  animation: particle-drift linear infinite;
+  user-select: none;
+}
+@keyframes particle-drift {
+  0%   { opacity: 0; transform: translateY(0) scale(0.8); }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-80px) scale(1); }
+}
+
+.rp-hero-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.rp-hero-stat {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.2rem;
+  transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.rp-hero-stat:hover {
+  border-color: rgba(127,255,0,0.3);
+  transform: translateY(-3px);
+}
+.rp-hero-stat__num {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.rp-hero-stat__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.rp-hero-stat__sub {
+  font-size: 0.65rem;
+  color: var(--ink-muted);
+  margin-top: 0.2rem;
+}
+
+.rp-hero-building {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1.1rem;
+  position: relative;
+  z-index: 1;
+}
+.rp-hero-building__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: rp-pulse 1.4s infinite;
+}
+.rp-hero-building__label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+.rp-hero-building__text {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   HERO HEADLINE WORD STAGGER
+   ============================================================ */
+.hero-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(28px);
+  animation: hero-word-rise 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes hero-word-rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-word { animation: none; opacity: 1; transform: none; }
+}
+
+/* ============================================================
+   COMEBACK VERTICAL TIMELINE CONNECTOR  (Change 6)
+   ============================================================ */
+.rp-journey-cards {
+  position: relative;
+}
+.rp-journey-cards::before {
+  content: '';
+  position: absolute;
+  left: calc(1.75rem + 10px);
+  top: 2rem;
+  bottom: 2rem;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), rgba(127,255,0,0.08));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1.2s cubic-bezier(0.22,1,0.36,1);
+}
+.rp-journey-cards.is-revealed::before {
+  transform: scaleY(1);
+}
+.rp-journey-num {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   PROJECT CARD HOVER LIFT  (Change 7)
+   ============================================================ */
+.rp-project-card {
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.4s cubic-bezier(0.22,1,0.36,1),
+              border-color 0.3s ease;
+}
+.rp-project-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(127,255,0,0.08), 0 0 0 1px rgba(127,255,0,0.2);
+  border-color: rgba(127,255,0,0.3);
+}
+
+/* ============================================================
+   TAGLINE REVEAL  (Change 8 — Skill B11 mandatory)
+   ============================================================ */
+.rp-tagline-section {
+  padding-block: clamp(5rem, 12vh, 9rem);
+  overflow: hidden;
+}
+.rp-tagline-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  opacity: 0.75;
+}
+.rp-tagline-text {
+  line-height: 1.35;
+}
+.rp-tagline-word {
+  display: inline-block;
+  color: rgba(247, 248, 248, 0.22);
+  transition: color 0.55s cubic-bezier(0.22,1,0.36,1);
+  margin-right: 0.3em;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.rp-tagline-word.is-lit {
+  color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rp-tagline-word { color: var(--ink); transition: none; }
 }
