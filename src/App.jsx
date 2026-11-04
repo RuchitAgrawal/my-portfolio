@@ -17,6 +17,7 @@ import Internships from './components/Internships';
 import OperatingPrinciples from './components/OperatingPrinciples';
 import VoiceStrategy from './components/VoiceStrategy';
 import ContactSection from './components/ContactSection';
+import LaserNav from './components/LaserNav';
 import { setAudioActive } from './utils/audioEffects';
 
 export default function App() {
@@ -65,6 +66,9 @@ export default function App() {
 
       {/* Neon Cursor Trail */}
       <CursorTrail />
+
+      {/* Laser Nav */}
+      <LaserNav />
 
       {/* Fixed Header */}
       <Header audioRef={audioRef} playing={playing} setPlaying={setPlaying} />

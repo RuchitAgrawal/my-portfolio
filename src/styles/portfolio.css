@@ -295,6 +295,9 @@ body::before {
   transition: color 0.2s;
 }
 .rp-header__nav a:hover { color: var(--ink); }
+@media (max-width: 768px) {
+  .rp-header__nav { display: none; }
+}
 
 /* Audio pill */
 .rp-audio-pill {
