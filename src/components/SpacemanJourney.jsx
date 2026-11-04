@@ -26,7 +26,7 @@ const bez = (p0, c1, c2, p1, t) => {
 
 // Human, contextual dialogues
 const SECTION_BUBBLES = {
-  hero: 'Ready to build with Wispr Flow 🚀',
+  hero: '',
   origin: 'Age 9 on Vice City... where it all began 🎮',
   comeback: 'Rejection is just high-res calibration ⚡',
   work: 'Shipped to 6,000+ real humans 🛠️',
@@ -48,8 +48,8 @@ export default function SpacemanJourney() {
   const layerRef = useRef(null)
   const actorRef = useRef(null)
   const bubbleRef = useRef(null)
-  const [bubbleText, setBubbleText] = useState(SECTION_BUBBLES.hero)
-  const [showBubble, setShowBubble] = useState(true)
+  const [bubbleText, setBubbleText] = useState('')
+  const [showBubble, setShowBubble] = useState(false)
   const [bubbleBelow, setBubbleBelow] = useState(false)
   const [flipping, setFlipping] = useState(false)
   const quoteIdxRef = useRef(0)
@@ -137,10 +137,13 @@ export default function SpacemanJourney() {
     const updateBubble = (sectionId) => {
       if (state.currentSection !== sectionId) {
         state.currentSection = sectionId
-        setBubbleText(SECTION_BUBBLES[sectionId] || '')
+        const txt = SECTION_BUBBLES[sectionId] || ''
+        setBubbleText(txt)
         setShowBubble(false)
         clearTimeout(bubbleTimeout)
-        bubbleTimeout = setTimeout(() => setShowBubble(true), 350)
+        if (txt) {
+          bubbleTimeout = setTimeout(() => setShowBubble(true), 350)
+        }
       }
     }
 
@@ -275,45 +278,47 @@ export default function SpacemanJourney() {
       >
         
         {/* Interactive Speech Bubble with auto-flip when near top */}
-        <div
-          ref={bubbleRef}
-          className="rp-spaceman-bubble"
-          style={{
-            position: 'absolute',
-            ...(bubbleBelow ? { top: '100%', marginTop: '8px' } : { bottom: '100%', marginBottom: '8px' }),
-            left: '50%',
-            transform: `translateX(-50%) scale(${showBubble ? 1 : 0.6})`,
-            opacity: showBubble ? 1 : 0,
-            transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease',
-            pointerEvents: 'none',
-            whiteSpace: 'nowrap',
-            padding: '0.35rem 0.75rem',
-            background: 'var(--surface-2, #141418)',
-            border: '1px solid var(--accent, #7fff00)',
-            borderRadius: '999px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.65rem',
-            color: 'var(--ink, #f7f8f8)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.7), 0 0 12px rgba(127,255,0,0.22)',
-            zIndex: 10,
-          }}
-        >
-          {bubbleText}
+        {bubbleText && (
           <div
+            ref={bubbleRef}
+            className="rp-spaceman-bubble"
             style={{
               position: 'absolute',
-              ...(bubbleBelow
-                ? { bottom: '100%', borderBottom: '5px solid var(--accent, #7fff00)', borderTop: 'none' }
-                : { top: '100%', borderTop: '5px solid var(--accent, #7fff00)', borderBottom: 'none' }),
+              ...(bubbleBelow ? { top: '100%', marginTop: '8px' } : { bottom: '100%', marginBottom: '8px' }),
               left: '50%',
-              transform: 'translateX(-50%)',
-              width: 0,
-              height: 0,
-              borderLeft: '5px solid transparent',
-              borderRight: '5px solid transparent',
+              transform: `translateX(-50%) scale(${showBubble ? 1 : 0.6})`,
+              opacity: showBubble ? 1 : 0,
+              transition: 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease',
+              pointerEvents: 'none',
+              whiteSpace: 'nowrap',
+              padding: '0.35rem 0.75rem',
+              background: 'var(--surface-2, #141418)',
+              border: '1px solid var(--accent, #7fff00)',
+              borderRadius: '999px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.65rem',
+              color: 'var(--ink, #f7f8f8)',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.7), 0 0 12px rgba(127,255,0,0.22)',
+              zIndex: 10,
             }}
-          />
-        </div>
+          >
+            {bubbleText}
+            <div
+              style={{
+                position: 'absolute',
+                ...(bubbleBelow
+                  ? { bottom: '100%', borderBottom: '5px solid var(--accent, #7fff00)', borderTop: 'none' }
+                  : { top: '100%', borderTop: '5px solid var(--accent, #7fff00)', borderBottom: 'none' }),
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: 0,
+                height: 0,
+                borderLeft: '5px solid transparent',
+                borderRight: '5px solid transparent',
+              }}
+            />
+          </div>
+        )}
 
         {/* 360 Spin Flip Wrapper */}
         <div
