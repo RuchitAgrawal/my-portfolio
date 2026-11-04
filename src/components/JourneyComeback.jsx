@@ -1,4 +1,47 @@
+import { useEffect, useRef, useState } from 'react'
+
 export default function JourneyComeback() {
+  const cardsRef = useRef(null)
+  const [revealed, setRevealed] = useState(false)
+
+  useEffect(() => {
+    const el = cardsRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setRevealed(true); obs.disconnect() } },
+      { threshold: 0.2 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  const CARDS = [
+    {
+      num: '01',
+      title: 'The Target & The Shortlist',
+      pill: { label: 'FINALIST', cls: 'rp-pill--muted' },
+      body: 'I spent months dissecting open-source codebases for Google Summer of Code. Drafted detailed architecture proposals, submitted early patches, and fought my way to the finalist shortlist with a live technical interview. I put everything on the table.',
+      footer: 'Status: Reached Finalist Round ✓',
+      cardCls: '',
+    },
+    {
+      num: '02',
+      title: 'The Cut',
+      pill: { label: 'FAILED', cls: 'rp-pill--danger' },
+      body: 'The accepted list went live. My name wasn\'t on it. Coming right on top of weeks of silent inbox ghosting and 40+ internship rejections during that summer search, it felt like sprinting straight into a concrete wall.',
+      footer: 'Lesson: Rejection isn\'t a verdict. It\'s high-resolution calibration.',
+      cardCls: 'rp-journey-card--danger',
+    },
+    {
+      num: '03',
+      title: 'The Next Morning',
+      pill: { label: 'RELENTLESS', cls: 'rp-pill--accent' },
+      body: (<>At 8 AM the next morning, I opened VS Code. If organizations wouldn't hire me through the front door, I would push code they couldn't ignore. Submitted PRs to <strong style={{ color: 'var(--ink)' }}>Oracle Labs Macaron</strong> and the <strong style={{ color: 'var(--ink)' }}>Meson Build System (6,500★)</strong>. Both merged. Then landed a Singapore remote AI startup role at TheLastQuestion.io, shipping features to 6,000+ active users.</>),
+      footer: 'Outcome: "Giving up has never been in my blood."',
+      cardCls: 'rp-journey-card--win',
+    },
+  ]
+
   return (
     <section id="comeback" className="rp-section">
       <div className="rp-container">
@@ -14,52 +57,25 @@ export default function JourneyComeback() {
           </p>
         </div>
 
-        {/* 3-Step Journey Ladder */}
-        <div className="rp-journey-cards reveal reveal-delay-1">
-          {/* Step 1 */}
-          <div className="rp-journey-card">
-            <div className="rp-journey-num">01</div>
-            <div>
-              <h3>
-                The Target &amp; The Shortlist
-                <span className="rp-pill rp-pill--muted">FINALIST</span>
-              </h3>
-              <p style={{ marginTop: '0.6rem' }}>
-                I spent months dissecting open-source codebases for Google Summer of Code. Drafted detailed architecture proposals, submitted early patches, and fought my way to the finalist shortlist with a live technical interview. I put everything on the table.
-              </p>
+        {/* 3-Step Journey Ladder with timeline connector */}
+        <div ref={cardsRef} className={`rp-journey-cards${revealed ? ' is-revealed' : ''}`}>
+          {CARDS.map((card, i) => (
+            <div
+              key={card.num}
+              className={`rp-journey-card reveal ${card.cardCls}`}
+              style={{ animationDelay: `${i * 120}ms` }}
+            >
+              <div className="rp-journey-num">{card.num}</div>
+              <div>
+                <h3>
+                  {card.title}
+                  <span className={`rp-pill ${card.pill.cls}`}>{card.pill.label}</span>
+                </h3>
+                <p style={{ marginTop: '0.6rem' }}>{card.body}</p>
+              </div>
+              <div className="rp-journey-footer">{card.footer}</div>
             </div>
-            <div className="rp-journey-footer">Status: Reached Finalist Round ✓</div>
-          </div>
-
-          {/* Step 2 */}
-          <div className="rp-journey-card rp-journey-card--danger">
-            <div className="rp-journey-num">02</div>
-            <div>
-              <h3>
-                The Cut
-                <span className="rp-pill rp-pill--danger">FAILED</span>
-              </h3>
-              <p style={{ marginTop: '0.6rem' }}>
-                The accepted list went live. My name wasn't on it. Coming right on top of weeks of silent inbox ghosting and 40+ internship rejections during that summer search, it felt like sprinting straight into a concrete wall.
-              </p>
-            </div>
-            <div className="rp-journey-footer">Lesson: Rejection isn't a verdict. It's high-resolution calibration.</div>
-          </div>
-
-          {/* Step 3 */}
-          <div className="rp-journey-card rp-journey-card--win">
-            <div className="rp-journey-num">03</div>
-            <div>
-              <h3>
-                The Next Morning
-                <span className="rp-pill rp-pill--accent">RELENTLESS</span>
-              </h3>
-              <p style={{ marginTop: '0.6rem' }}>
-                At 8 AM the next morning, I opened VS Code. If organizations wouldn't hire me through the front door, I would push code they couldn't ignore. Submitted PRs to <strong style={{ color: 'var(--ink)' }}>Oracle Labs Macaron</strong> and the <strong style={{ color: 'var(--ink)' }}>Meson Build System (6,500★)</strong>. Both merged. Then landed a Singapore remote AI startup role at TheLastQuestion.io, shipping features to 6,000+ active users.
-              </p>
-            </div>
-            <div className="rp-journey-footer">Outcome: "Giving up has never been in my blood."</div>
-          </div>
+          ))}
         </div>
 
       </div>
