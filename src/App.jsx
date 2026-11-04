@@ -11,6 +11,7 @@ import SpacemanJourney from './components/SpacemanJourney';
 import TerminalHero from './components/TerminalHero';
 import AsciiPortrait from './components/AsciiPortrait';
 import JourneyComeback from './components/JourneyComeback';
+import ProjectsDeck from './components/ProjectsDeck';
 import { setAudioActive } from './utils/audioEffects';
 
 export default function App() {
@@ -71,6 +72,7 @@ export default function App() {
         <TerminalHero />
         <AsciiPortrait />
         <JourneyComeback />
+        <ProjectsDeck />
       </main>
 
       {/* Subtle Film Grain Layer */}
