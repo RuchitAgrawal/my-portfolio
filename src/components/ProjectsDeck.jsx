@@ -196,7 +196,8 @@ export default function ProjectsDeck() {
           {PROJECTS.map((p, idx) => (
             <div
               key={p.title}
-              className={`rp-project-card reveal reveal-delay-${(idx % 4) + 1}`}
+              className="rp-project-card reveal"
+              style={{ animationDelay: `${idx * 100}ms` }}
             >
               <div className="rp-project-card__visual">
                 {p.illustration}

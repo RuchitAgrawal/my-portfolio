@@ -2,37 +2,37 @@ const BELIEFS = [
   {
     num: '01',
     tag: 'RELENTLESS',
-    quote: '“Giving up has never been in my blood. I genuinely do not know how.”',
+    quote: '"Giving up has never been in my blood. I genuinely do not know how."',
     story: 'Summer \'26 rejection grind. Over 40 silent rejections and the GSoC finalist cut. Freezing wasn\'t an option — by 8 AM the next morning, I was committing code to Oracle Labs Macaron.',
   },
   {
     num: '02',
     tag: 'NO SHORTCUTS',
-    quote: '“Pedigree is just a shortcut. Code is undeniable proof.”',
+    quote: '"Pedigree is just a shortcut. Code is undeniable proof."',
     story: 'I didn\'t start with an IIT or BITS tag. So I let upstream maintainers judge me by diffs. When your pull request gets merged into a 6,500-star build system, nobody asks what college you go to.',
   },
   {
     num: '03',
     tag: 'SHIPPING TRUTH',
-    quote: '“Real users break textbook code. Ship early and listen hard.”',
+    quote: '"Real users break textbook code. Ship early and listen hard."',
     story: 'Scaling TheLastQuestion.io to 6,000+ users in 8 weeks taught me that theoretical architecture breaks under real load. You don\'t know what you\'ve built until a stranger tries to use it.',
   },
   {
     num: '04',
     tag: 'VOICE INTENT',
-    quote: '“Voice removes the backspace key. It\'s the fastest bridge from gut to screen.”',
+    quote: '"Voice removes the backspace key. It\'s the fastest bridge from gut to screen."',
     story: 'Building RealityChecker proved that people sanitize their best ideas when typing into a text box. When you speak out loud, the authentic raw intention comes pouring through without the corporate filter.',
   },
   {
     num: '05',
     tag: 'CALIBRATION',
-    quote: '“Rejection is not a verdict. It’s just high-resolution calibration.”',
+    quote: '"Rejection is not a verdict. It\u2019s just high-resolution calibration."',
     story: 'Every closed door told me exactly which edge of my skill set was dull. You don\'t take it personally — you take the feedback, rebuild the engine, and show up twice as prepared next Monday.',
   },
   {
     num: '06',
     tag: 'ORIGIN SPARK',
-    quote: '“The kid on the borrowed PC in 2014 is still the one driving.”',
+    quote: '"The kid on the borrowed PC in 2014 is still the one driving."',
     story: 'Taking turns on the arrow keys playing GTA Vice City on a friend\'s brother\'s computer, wondering how simple text lines became a living universe. That childlike wonder is still why I code past 2 AM.',
   },
 ]
@@ -51,10 +51,14 @@ export default function OperatingPrinciples() {
           </p>
         </div>
 
-        {/* 6 Beliefs Grid */}
-        <div className="rp-principles reveal reveal-delay-1">
-          {BELIEFS.map((b) => (
-            <div key={b.num} className="rp-principle">
+        {/* 6 Beliefs Grid — each card cascades individually */}
+        <div className="rp-principles">
+          {BELIEFS.map((b, i) => (
+            <div
+              key={b.num}
+              className="rp-principle reveal"
+              style={{ animationDelay: `${i * 80}ms` }}
+            >
               <div className="rp-principle__header">
                 <span className="rp-principle__num">{b.num}</span>
                 <span className="rp-principle__tag">{b.tag}</span>
