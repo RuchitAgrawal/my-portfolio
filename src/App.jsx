@@ -15,7 +15,6 @@ import ProjectsDeck from './components/ProjectsDeck';
 import OpenSourceShelf from './components/OpenSourceShelf';
 import Internships from './components/Internships';
 import OperatingPrinciples from './components/OperatingPrinciples';
-import TaglineReveal from './components/TaglineReveal';
 import VoiceStrategy from './components/VoiceStrategy';
 import ContactSection from './components/ContactSection';
 import LaserNav from './components/LaserNav';
@@ -86,7 +85,6 @@ export default function App() {
         <OpenSourceShelf />
         <Internships />
         <OperatingPrinciples />
-        <TaglineReveal />
         <VoiceStrategy />
         <ContactSection />
       </main>
