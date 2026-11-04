@@ -3,6 +3,7 @@ import { ArrowDown } from 'lucide-react'
 import { useReveal } from '../hooks/useReveal'
 import { useCountUp } from '../hooks/useCountUp'
 import { playTerminalSound } from '../utils/audioEffects'
+import HeroCanvas from './HeroCanvas'
 
 const BOOT = [
   { text: '> kernel.init("ruchit.selfintro")', acc: null },
@@ -51,9 +52,24 @@ export default function TerminalHero() {
   const [visible, setVisible] = useState(0)
   const [commandHistory, setCommandHistory] = useState([])
   const [statsInView, setStatsInView] = useState(false)
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 })
   const sectionRef = useRef(null)
   const rightPanelRef = useRef(null)
   useReveal(sectionRef)
+
+  const handleTerminalMouseMove = (e) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
+    const rx = -(y / (rect.height / 2)) * 6
+    const ry = (x / (rect.width / 2)) * 6
+    setTilt({ rx: Math.round(rx * 10) / 10, ry: Math.round(ry * 10) / 10 })
+  }
+
+  const handleTerminalMouseLeave = () => {
+    setTilt({ rx: 0, ry: 0 })
+  }
 
   useEffect(() => {
     const timers = BOOT.map((_, i) =>
@@ -100,10 +116,21 @@ export default function TerminalHero() {
       className="rp-hero rp-container"
       style={{ maxWidth: 'var(--max-w)', marginInline: 'auto' }}
     >
+      {/* Background Interactive Cyber Canvas */}
+      <HeroCanvas />
+
       {/* LEFT COLUMN */}
       <div className="rp-hero__left">
-        {/* Terminal card */}
-        <div className="rp-terminal reveal" style={{ animationDelay: '0.1s' }}>
+        {/* Terminal card with 3D perspective tilt */}
+        <div
+          className="rp-terminal reveal"
+          style={{
+            animationDelay: '0.1s',
+            transform: `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+          }}
+          onMouseMove={handleTerminalMouseMove}
+          onMouseLeave={handleTerminalMouseLeave}
+        >
           <div className="rp-terminal__bar">
             <div className="rp-terminal__dots">
               <span className="rp-terminal__dot rp-terminal__dot--r" />
