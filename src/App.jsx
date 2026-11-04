@@ -9,6 +9,7 @@ import CursorTrail from './components/CursorTrail';
 import Header from './components/Header';
 import SpacemanJourney from './components/SpacemanJourney';
 import TerminalHero from './components/TerminalHero';
+import AsciiPortrait from './components/AsciiPortrait';
 import { setAudioActive } from './utils/audioEffects';
 
 export default function App() {
@@ -67,6 +68,7 @@ export default function App() {
       {/* Main Content */}
       <main>
         <TerminalHero />
+        <AsciiPortrait />
       </main>
 
       {/* Subtle Film Grain Layer */}
