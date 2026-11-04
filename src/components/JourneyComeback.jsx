@@ -1,20 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-
 export default function JourneyComeback() {
-  const cardsRef = useRef(null)
-  const [revealed, setRevealed] = useState(false)
-
-  useEffect(() => {
-    const el = cardsRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setRevealed(true); obs.disconnect() } },
-      { threshold: 0.2 }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
   const CARDS = [
     {
       num: '01',
@@ -57,8 +41,8 @@ export default function JourneyComeback() {
           </p>
         </div>
 
-        {/* 3-Step Journey Ladder with timeline connector */}
-        <div ref={cardsRef} className={`rp-journey-cards${revealed ? ' is-revealed' : ''}`}>
+        {/* 3-Step Journey Ladder */}
+        <div className="rp-journey-cards">
           {CARDS.map((card, i) => (
             <div
               key={card.num}
