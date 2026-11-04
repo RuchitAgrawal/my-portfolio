@@ -16,6 +16,7 @@ import OpenSourceShelf from './components/OpenSourceShelf';
 import Internships from './components/Internships';
 import OperatingPrinciples from './components/OperatingPrinciples';
 import VoiceStrategy from './components/VoiceStrategy';
+import ContactSection from './components/ContactSection';
 import { setAudioActive } from './utils/audioEffects';
 
 export default function App() {
@@ -81,6 +82,7 @@ export default function App() {
         <Internships />
         <OperatingPrinciples />
         <VoiceStrategy />
+        <ContactSection />
       </main>
 
       {/* Subtle Film Grain Layer */}
