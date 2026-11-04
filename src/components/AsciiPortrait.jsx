@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { playToggleSound } from '../utils/audioEffects'
+import { useCountUp } from '../hooks/useCountUp'
 
 const CHARS = ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'
 
@@ -47,9 +48,41 @@ function renderAscii(img, canvas) {
   }
 }
 
+function StatCardItem({ stat, inView }) {
+  const count = useCountUp(stat.target || 0, 1400, inView)
+  const displayVal = stat.target
+    ? count.toLocaleString() + (stat.suffix || '')
+    : stat.num
+
+  return (
+    <div className="rp-stat">
+      <div className="rp-stat__num">{displayVal}</div>
+      <div className="rp-stat__label" style={{ whiteSpace: 'pre-line' }}>{stat.label}</div>
+    </div>
+  )
+}
+
 export default function AsciiPortrait() {
   const canvasRef = useRef(null)
+  const statsRef = useRef(null)
   const [toggled, setToggled] = useState(false)
+  const [statsInView, setStatsInView] = useState(false)
+
+  useEffect(() => {
+    const el = statsRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsInView(true)
+          obs.disconnect()
+        }
+      },
+      { threshold: 0.25 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -116,17 +149,14 @@ export default function AsciiPortrait() {
               That felt fair in a way most things didn't.
             </p>
 
-            <div className="rp-stats reveal reveal-delay-2">
+            <div ref={statsRef} className="rp-stats reveal reveal-delay-2">
               {[
                 { num: 'CLASS OF \'27', label: 'Final-Year B.Tech CSE\nPDEU, Gujarat' },
-                { num: '4391',         label: 'GATE CSE 2026\nTop 2% / 200,000+' },
-                { num: '6,000+',       label: 'Users shipped live\nTheLastQuestion.io (Singapore)' },
+                { target: 4391,        label: 'GATE CSE 2026\nTop 2% / 200,000+' },
+                { target: 6000, suffix: '+', label: 'Users shipped live\nTheLastQuestion.io (Singapore)' },
                 { num: '6.5k★',        label: 'Meson Build System\nUpstream PR merged' },
-              ].map((s) => (
-                <div key={s.num} className="rp-stat">
-                  <div className="rp-stat__num">{s.num}</div>
-                  <div className="rp-stat__label" style={{ whiteSpace: 'pre-line' }}>{s.label}</div>
-                </div>
+              ].map((s, idx) => (
+                <StatCardItem key={s.label || idx} stat={s} inView={statsInView} />
               ))}
             </div>
           </div>
